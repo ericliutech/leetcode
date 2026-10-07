@@ -26,8 +26,8 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | Problem | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- | --- |
 | [1. Two Sum](problems/algorithms/0001-two-sum/problem.md) | [go/hashmap](problems/algorithms/0001-two-sum/solutions/go/hashmap/) | Pair sum; fast complement lookup | Check `target-num` among earlier values, then store `num → index`. | O(n) expected | O(n) |  |
-| [3. Longest Substring Without Repeating Characters](problems/algorithms/0003-longest-substring-without-repeating-characters/problem.md) | [go/sliding-window](problems/algorithms/0003-longest-substring-without-repeating-characters/solutions/go/sliding-window/) |  |  |  |  |  |
-| [20. Valid Parentheses](problems/algorithms/0020-valid-parentheses/problem.md) | [go/stack](problems/algorithms/0020-valid-parentheses/solutions/go/stack/) |  |  |  |  |  |
+| [3. Longest Substring Without Repeating Characters](problems/algorithms/0003-longest-substring-without-repeating-characters/problem.md) | [go/sliding-window](problems/algorithms/0003-longest-substring-without-repeating-characters/solutions/go/sliding-window/) | Longest contiguous segment with no duplicates | Track last-seen indices; move `left` past a duplicate inside the window and update the maximum length. | O(n) | O(1), fixed 256-entry array | Tried recursive DP; a sliding window tracks uniqueness directly. |
+| [20. Valid Parentheses](problems/algorithms/0020-valid-parentheses/problem.md) | [go/stack](problems/algorithms/0020-valid-parentheses/solutions/go/stack/) | Nested pairs; last opened must close first | Push opening brackets. For each closing bracket, require a matching stack top, then pop. Accept only if the stack ends empty. | Θ(n) worst case | O(n) |  |
 
 <!-- generated:progress:end -->
 

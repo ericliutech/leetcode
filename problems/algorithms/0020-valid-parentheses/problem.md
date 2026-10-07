@@ -36,4 +36,4 @@ Return a boolean and compare it exactly. Matching counts alone are insufficient:
 
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
-| [go/stack](solutions/go/stack/) |  |  |  |  |  |
+| [go/stack](solutions/go/stack/) | Nested pairs; last opened must close first | Push opening brackets. For each closing bracket, require a matching stack top, then pop. Accept only if the stack ends empty. | Θ(n) worst case | O(n) |  |

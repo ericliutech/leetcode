@@ -34,4 +34,4 @@ Return an integer length, not the segment itself. An empty input has length zero
 
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
-| [go/sliding-window](solutions/go/sliding-window/) |  |  |  |  |  |
+| [go/sliding-window](solutions/go/sliding-window/) | Longest contiguous segment with no duplicates | Track last-seen indices; move `left` past a duplicate inside the window and update the maximum length. | O(n) | O(1), fixed 256-entry array | Tried recursive DP; a sliding window tracks uniqueness directly. |
