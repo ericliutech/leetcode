@@ -1,0 +1,7 @@
+[
+  {"id": 1, "input": {"s": "()"}, "expected": true, "remark": ""},
+  {"id": 2, "input": {"s": "()[]{}"}, "expected": true, "remark": ""},
+  {"id": 3, "input": {"s": "(]"}, "expected": false, "remark": ""},
+  {"id": 4, "input": {"s": "([])"}, "expected": true, "remark": ""},
+  {"id": 5, "input": {"s": "([)]"}, "expected": false, "remark": ""}
+]

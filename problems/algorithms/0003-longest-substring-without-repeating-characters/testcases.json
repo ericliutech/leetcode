@@ -1,0 +1,5 @@
+[
+  {"id": 1, "input": {"s": "abcabcbb"}, "expected": 3, "remark": ""},
+  {"id": 2, "input": {"s": "bbbbb"}, "expected": 1, "remark": ""},
+  {"id": 3, "input": {"s": "pwwkew"}, "expected": 3, "remark": ""}
+]

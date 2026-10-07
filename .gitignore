@@ -1,0 +1,22 @@
+# Local execution and benchmark artifacts
+/bin/
+/.local/
+/coverage.out
+/coverage.html
+*.test
+*.prof
+__pycache__/
+zz_generated_test.go
+
+# Local editor and operating-system files
+.DS_Store
+.idea/
+.vscode/
+
+# Local credentials and agent configuration
+.env
+.env.*
+!.env.example
+/.aws/
+/.agents/
+/.codex/
