@@ -127,11 +127,13 @@ class ConsolidateTests(unittest.TestCase):
         self.generate()
         self.assertIn("| Easy |  | go |", (self.root / "README.md").read_text())
 
-    def test_hook_refreshes_documents_during_an_isolated_commit(self):
+    def test_generator_refreshes_documents_during_an_isolated_commit(self):
         self.write("scripts/.keep", "")
         shutil.copyfile(generator.__file__, self.root / "scripts/consolidate.py")
+        self.write(".githooks/pre-commit", "#!/bin/sh\nexec python3 scripts/consolidate.py --staged\n")
+        (self.root / ".githooks/pre-commit").chmod(0o755)
         self.git("add", ".")
-        hook_directory = Path(generator.__file__).resolve().parent.parent / ".githooks"
+        hook_directory = self.root / ".githooks"
         self.git(
             "-c", f"core.hooksPath={hook_directory}",
             "-c", "user.name=Generator tests", "-c", "user.email=tests@example.invalid",

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec python3 scripts/consolidate.py --staged
+exec python3 scripts/precommit.py

@@ -42,6 +42,8 @@ Edit `problem.md` to record your approach, trigger, key idea, complexity, and mi
 
 Run `python3 scripts/consolidate.py` to refresh the overview, or let the pre-commit hook refresh it from staged documentation. Use `python3 scripts/consolidate.py --check` to check that it is current.
 
+The pre-commit hook tests a temporary copy of all staged files before updating the README. Solution cases, shared runner tests, and repository automation tests must pass for the commit to proceed.
+
 Go solutions share the root `go.mod`. Run `go run ./cmd/leetcode test` to generate adapters and check every Go implementation against its `testcases.json`, or see the [individual commands](docs/testing-and-benchmarks.md#running-tests). Benchmarking and the CI workflow are not implemented yet. Solution entries do not imply local verification or LeetCode acceptance.
 
 Solution source files are maintained by the repository owner. Automated tooling must not edit, format, move, or rename them without explicit permission.

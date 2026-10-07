@@ -30,6 +30,8 @@ Every test run regenerates adapters before calling `go test -v -count=1`, with a
 
 `go run ./cmd/leetcode generate` only generates adapters. After generation, ordinary `go test` commands also work, but they do not refresh adapters if signatures or comparison settings change. Fresh clones need generation first.
 
+Before each commit, the hook generates adapters and runs all Go and Python tests in a temporary copy of the staged repository. An unstaged fix cannot hide a failing staged solution or fixture. Failures block the commit before the README is regenerated; tests do not modify your working solution files.
+
 ## How matching works
 
 Keep implementations in `solutions/go/<approach>/solution.go`. The command scans source files in that package with Go's parser and finds a function whose named parameters match the first case's input keys. It ignores methods and test files. Parameters are passed in signature order; JSON key order is irrelevant.

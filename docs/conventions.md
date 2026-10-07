@@ -45,7 +45,7 @@ Use methodology names such as `hashmap`, `sliding-window`, and `stack`. `initial
 2. Add [testcases.json](testing-and-benchmarks.md) with the example inputs and expected outputs.
 3. Add your implementation in `solution.go` and a row linking to it in the solution table. Match the JSON input keys to the function parameter names.
 4. Run `go run ./cmd/leetcode test <problem-directory>`; test adapters are generated automatically.
-5. Stage your changes and commit. The hook refreshes the root overview. Alternatively, run `python3 scripts/consolidate.py` before staging.
+5. Stage your changes and commit. The hook tests the staged repository, then refreshes the root overview if all tests pass. Alternatively, run `python3 scripts/consolidate.py` before staging to preview the overview.
 
 Custom tests go in the same `testcases.json`; no template directory, second fixture file, or manually written test adapter is needed. Comparison defaults to exact equality; specify `Comparison: unordered` in `problem.md` when only output order may differ. See the [runner documentation](testing-and-benchmarks.md) for commands and supported signatures.
 
@@ -61,6 +61,8 @@ Commands require Python 3 and Git:
 - `python3 -m unittest discover -s scripts/tests`: test generation and staged-file safeguards.
 
 The tracked hook is `.githooks/pre-commit`, enabled for this clone. Enable it in another clone with `git config --local core.hooksPath .githooks`; hooks are not enabled automatically by cloning.
+
+The hook runs `scripts/precommit.py`. It copies the Git index to a temporary directory, generates adapters there, runs every Go test (solution cases and shared runner tests), and runs the Python repository automation tests. A failing test, compilation error, or generation error blocks the commit. It checks that the staged file list and object hashes have not changed during validation; if they have, retry the commit. Only after successful testing does it regenerate and stage the README. The temporary directory is removed afterward, including its generated adapters. Your solution files and unstaged edits are never copied back or modified. Local hooks can be bypassed; CI enforcement remains future work.
 
 The hook reads staged documents so partially staged notes remain partially staged. It refuses to overwrite unstaged root README edits. Stage those edits or restore the affected README before retrying. It never stages your problem documents, fixtures, solutions, or unrelated files.
 
