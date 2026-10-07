@@ -47,3 +47,7 @@ The pre-commit hook tests a temporary copy of all staged files before updating t
 Go solutions share the root `go.mod`. Run `go run ./cmd/leetcode test` to generate adapters and check every Go implementation against its `testcases.json`, or see the [individual commands](docs/testing-and-benchmarks.md#running-tests). Benchmarking and the CI workflow are not implemented yet. Solution entries do not imply local verification or LeetCode acceptance.
 
 Solution source files are maintained by the repository owner. Automated tooling must not edit, format, move, or rename them without explicit permission.
+
+## License
+
+My original solutions, tooling, and notes are licensed under the [MIT License](LICENSE). Third-party problem material is excluded and remains subject to its respective rights.
