@@ -115,3 +115,117 @@ func TestRunDecodesFreshMutableInputs(t *testing.T) {
 		return original
 	}, []string{"values"}, "exact")
 }
+
+type testNode struct {
+	Val  int
+	Next *testNode
+}
+
+func TestLinkedListDecoding(t *testing.T) {
+	kind := reflect.TypeOf((*testNode)(nil))
+	for _, raw := range []string{`[]`, `null`, `[7]`, `[1,2,2,-3]`} {
+		t.Run(raw, func(t *testing.T) {
+			head, err := decode(json.RawMessage(raw), kind)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, err := listValues(head)
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := make([]int, 0)
+			if err := json.Unmarshal([]byte(raw), &want); err != nil {
+				t.Fatal(err)
+			}
+			if raw == `null` {
+				want = []int{}
+			}
+			if !reflect.DeepEqual(got, want) {
+				t.Fatalf("got %v, want %v", got, want)
+			}
+			if len(want) == 0 && !head.IsNil() {
+				t.Fatal("empty list must produce a nil head")
+			}
+		})
+	}
+	for _, raw := range []string{`[null]`, `[1.5]`, `["1"]`, `[[1]]`} {
+		if _, err := decode(json.RawMessage(raw), kind); err == nil {
+			t.Fatalf("invalid node values accepted: %s", raw)
+		}
+	}
+}
+
+func TestLinkedListDecodingCreatesIndependentNodes(t *testing.T) {
+	kind := reflect.TypeOf((*testNode)(nil))
+	first, err := decode(json.RawMessage(`[1,2]`), kind)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := decode(json.RawMessage(`[1,2]`), kind)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first.Interface().(*testNode).Next.Val = 99
+	values, err := listValues(second)
+	if err != nil || !reflect.DeepEqual(values, []int{1, 2}) {
+		t.Fatalf("decoded lists share mutable nodes: %v (%v)", values, err)
+	}
+}
+
+func TestLinkedListComparisonPreservesOrderAndLength(t *testing.T) {
+	kind := reflect.TypeOf((*testNode)(nil))
+	for _, check := range []struct {
+		got, want string
+		equal     bool
+	}{
+		{`[3,2,1]`, `[3,2,1]`, true},
+		{`[1,2,3]`, `[3,2,1]`, false},
+		{`[1,2]`, `[1,2,3]`, false},
+		{`[]`, `null`, true},
+		{`[1,1]`, `[1,2]`, false},
+	} {
+		got, err := decode(json.RawMessage(check.got), kind)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want, err := decode(json.RawMessage(check.want), kind)
+		if err != nil {
+			t.Fatal(err)
+		}
+		matched, err := matches(got, want, "exact")
+		if err != nil || matched != check.equal {
+			t.Fatalf("%s vs %s: matched=%v, want %v (%v)", check.got, check.want, matched, check.equal, err)
+		}
+	}
+	if _, err := matches(reflect.ValueOf((*testNode)(nil)), reflect.ValueOf((*testNode)(nil)), "unordered"); err == nil {
+		t.Fatal("linked lists must preserve order")
+	}
+}
+
+func TestLinkedListCyclesAreReported(t *testing.T) {
+	for _, twoNodes := range []bool{false, true} {
+		head := &testNode{Val: 1}
+		if twoNodes {
+			head.Next = &testNode{Val: 2, Next: head}
+		} else {
+			head.Next = head
+		}
+		if _, err := matches(reflect.ValueOf(head), reflect.ValueOf((*testNode)(nil)), "exact"); err == nil {
+			t.Fatal("cycle was not reported")
+		}
+	}
+}
+
+func TestLinkedListRecognitionDoesNotIgnoreAdditionalFields(t *testing.T) {
+	type randomNode struct {
+		Val    int
+		Next   *randomNode
+		Random *randomNode
+	}
+	if isListNode(reflect.TypeOf((*randomNode)(nil))) {
+		t.Fatal("nodes with extra fields require their own representation")
+	}
+	if isListNode(reflect.TypeOf(testNode{})) || isListNode(reflect.TypeOf([]int{})) {
+		t.Fatal("only pointers to ordinary singly linked nodes should match")
+	}
+}

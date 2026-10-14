@@ -50,6 +50,10 @@ func Load(path string) ([]Case, error) {
 }
 
 func decode(data json.RawMessage, kind reflect.Type) (reflect.Value, error) {
+	trimmed := bytes.TrimSpace(data)
+	if isListNode(kind) && (bytes.HasPrefix(trimmed, []byte("[")) || bytes.Equal(trimmed, []byte("null"))) {
+		return decodeList(data, kind)
+	}
 	if bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
 		switch kind.Kind() {
 		case reflect.Pointer, reflect.Slice, reflect.Map, reflect.Interface:
@@ -68,6 +72,60 @@ func decode(data json.RawMessage, kind reflect.Type) (reflect.Value, error) {
 		return reflect.Value{}, fmt.Errorf("cannot decode %s as %s: %w", data, kind, err)
 	}
 	return value.Elem(), nil
+}
+
+// Recognize ordinary singly linked nodes without depending on their package.
+// Extra fields (such as Random) require a different fixture representation.
+func isListNode(kind reflect.Type) bool {
+	if kind.Kind() != reflect.Pointer || kind.Elem().Kind() != reflect.Struct || kind.Elem().NumField() != 2 {
+		return false
+	}
+	value, hasValue := kind.Elem().FieldByName("Val")
+	next, hasNext := kind.Elem().FieldByName("Next")
+	return hasValue && hasNext && len(value.Index) == 1 && len(next.Index) == 1 &&
+		value.PkgPath == "" && next.PkgPath == "" && value.Type.Kind() == reflect.Int && next.Type == kind
+}
+
+func decodeList(data json.RawMessage, kind reflect.Type) (reflect.Value, error) {
+	var elements []json.RawMessage
+	if err := json.Unmarshal(data, &elements); err != nil {
+		return reflect.Value{}, fmt.Errorf("linked list requires an array of integers: %w", err)
+	}
+	head := reflect.Zero(kind)
+	for index := len(elements) - 1; index >= 0; index-- {
+		node := reflect.New(kind.Elem()).Convert(kind)
+		value, err := decode(elements[index], node.Elem().FieldByName("Val").Type())
+		if err != nil {
+			return reflect.Value{}, fmt.Errorf("linked-list element %d: %w", index, err)
+		}
+		node.Elem().FieldByName("Val").Set(value)
+		node.Elem().FieldByName("Next").Set(head)
+		head = node
+	}
+	return head, nil
+}
+
+func listValues(head reflect.Value) ([]int, error) {
+	values := make([]int, 0)
+	visited := make(map[any]bool)
+	for !head.IsNil() {
+		identity := head.Interface()
+		if visited[identity] {
+			return nil, fmt.Errorf("returned linked list contains a cycle")
+		}
+		visited[identity] = true
+		values = append(values, int(head.Elem().FieldByName("Val").Int()))
+		head = head.Elem().FieldByName("Next")
+	}
+	return values, nil
+}
+
+func display(value reflect.Value) any {
+	if isListNode(value.Type()) {
+		values, _ := listValues(value) // Comparison has already checked for cycles.
+		return values
+	}
+	return value.Interface()
 }
 
 func arguments(tc Case, signature reflect.Type, names []string) ([]reflect.Value, error) {
@@ -90,6 +148,20 @@ func arguments(tc Case, signature reflect.Type, names []string) ([]reflect.Value
 }
 
 func matches(got, expected reflect.Value, comparison string) (bool, error) {
+	if isListNode(got.Type()) {
+		if comparison != "exact" {
+			return false, fmt.Errorf("linked lists require exact ordered comparison")
+		}
+		values, err := listValues(got)
+		if err != nil {
+			return false, err
+		}
+		wanted, err := listValues(expected)
+		if err != nil {
+			return false, err
+		}
+		return reflect.DeepEqual(values, wanted), nil
+	}
 	switch comparison {
 	case "exact":
 		return reflect.DeepEqual(got.Interface(), expected.Interface()), nil
@@ -161,11 +233,11 @@ func Run(t *testing.T, path string, function any, names []string, comparison str
 			got := fn.Call(args)[0]
 			ok, err := matches(got, want, comparison)
 			if err != nil {
-				t.Fatal(err)
+				t.Fatalf("input=%v: %v; remark=%q", tc.Input, err, tc.Remark)
 			}
 			if !ok {
 				t.Errorf("input=%v: got %v, want %v (%s); remark=%q",
-					tc.Input, got.Interface(), want.Interface(), comparison, tc.Remark)
+					tc.Input, display(got), display(want), comparison, tc.Remark)
 			}
 		})
 	}

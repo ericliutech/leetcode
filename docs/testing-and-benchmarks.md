@@ -44,7 +44,7 @@ If several functions match, choose one explicitly:
 go run ./cmd/leetcode test --function twoSum problems/algorithms/0001-two-sum/solutions/go/hashmap
 ```
 
-The current runner supports top-level functions with fixed named parameters and exactly one returned value. Integers, strings, booleans, slices, arrays, maps, and other types accepted by Go's JSON decoder work directly. Generic functions, variadic functions, methods, multiple-return functions, and LeetCode-specific tree/list encodings require additional adapters or conversion support; the runner does not guess them.
+The current runner supports top-level functions with fixed named parameters and exactly one returned value. Integers, strings, booleans, slices, arrays, maps, and other types accepted by Go's JSON decoder work directly. Ordinary singly linked lists also support array fixtures as described below. Generic functions, variadic functions, methods, multiple-return functions, trees, and other special node encodings require additional adapters or conversion support.
 
 Generated `zz_generated_test.go` files are ignored by Git. They contain a function reference, parameter names, fixture path, and comparison mode; they do not contain solution code or custom fixture parsing. Do not maintain them manually. The generator only overwrites files bearing its generated header and never edits `solution.go` or handwritten tests.
 
@@ -67,6 +67,18 @@ Keep one `testcases.json` beside each problem's `problem.md`. All implementation
 Appending a case automatically includes it in the next run. Missing or empty fixtures, malformed JSON, duplicate IDs, missing required values, and unknown case fields fail the suite. Each invocation decodes fresh arguments, so mutable inputs are not reused between cases. Panics are reported as failed subtests.
 
 ## Comparison rules
+
+### Singly linked lists
+
+For a node pointer with exactly two fields, `Val int` and `Next` of the same pointer type, arrays are converted into fresh linked nodes automatically. Each solution may declare its own node type; no imports or changes to submission code are needed.
+
+```json
+{"id": 1, "input": {"head": [1, 2, 3]}, "expected": [3, 2, 1], "remark": ""}
+```
+
+An empty array or `null` represents a nil head. The returned list is traversed and compared by values in order; a nil result matches an empty expected array. A cycle in the returned list fails the case rather than looping indefinitely. Invalid values such as null list elements are rejected. Nodes with extra fields, cyclic input lists, and nested collections of node pointers need separate conversion support.
+
+### Other values
 
 Exact typed equality is the default. For unordered output, add one line to the problem's `problem.md`:
 
