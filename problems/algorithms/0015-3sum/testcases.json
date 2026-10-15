@@ -1,0 +1,5 @@
+[
+  {"id": 1, "input": {"nums": [-1, 0, 1, 2, -1, -4]}, "expected": [[-1, -1, 2], [-1, 0, 1]], "remark": ""},
+  {"id": 2, "input": {"nums": [0, 1, 1]}, "expected": [], "remark": ""},
+  {"id": 3, "input": {"nums": [0, 0, 0]}, "expected": [[0, 0, 0]], "remark": ""}
+]
