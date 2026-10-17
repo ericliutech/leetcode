@@ -8,8 +8,8 @@ My LeetCode problems, solutions, and notes for future review.
 
 | Measure | Count |
 | --- | ---: |
-| Documented problems | 7 |
-| Solution entries | 8 |
+| Documented problems | 8 |
+| Solution entries | 9 |
 
 Counts reflect documentation, not correctness or LeetCode acceptance.
 
@@ -24,6 +24,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | 33 | [Search in Rotated Sorted Array](problems/algorithms/0033-search-in-rotated-sorted-array/problem.md) | Medium | Array, Binary search | go |
 | 102 | [Binary Tree Level Order Traversal](problems/algorithms/0102-binary-tree-level-order-traversal/problem.md) | Medium | Tree, Breadth-first search, Binary tree | go |
 | 206 | [Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | Easy | Linked list, Recursion | go |
+| 347 | [Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | Medium | Array, Hash table, Heap | go |
 
 ## Solution notes
 
@@ -37,6 +38,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | [102. Binary Tree Level Order Traversal](problems/algorithms/0102-binary-tree-level-order-traversal/problem.md) | [go/bfs](problems/algorithms/0102-binary-tree-level-order-traversal/solutions/go/bfs/) | Visit a tree level by level | Process the current queue length, enqueue left then right children, and clear and drop the processed prefix. | O(n) | O(w) auxiliary queue |  |
 | [206. Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | [go/iterative](problems/algorithms/0206-reverse-linked-list/solutions/go/iterative/) | Reverse links in place | Save the next node, reverse the current link, then advance. | O(n) | O(1) |  |
 | [206. Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | [go/recursion](problems/algorithms/0206-reverse-linked-list/solutions/go/recursion/) | Reverse the remaining list first | Reverse the suffix, point the next node back to the current node, then clear the current link. This is equivalent to using a stack iteratively. | O(n) | O(n), call stack |  |
+| [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/max-heap](problems/algorithms/0347-top-k-frequent-elements/solutions/go/max-heap/) | Select the k most frequent distinct values | Count frequencies, heapify value/count pairs, then extract the maximum k times. | O(n + k log m) expected | O(m) |  |
 
 <!-- generated:progress:end -->
 

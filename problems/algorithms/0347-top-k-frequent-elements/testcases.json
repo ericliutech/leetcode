@@ -1,0 +1,11 @@
+[
+  {"id": 1, "input": {"nums": [1, 1, 1, 2, 2, 3], "k": 2}, "expected": [1, 2], "remark": ""},
+  {"id": 2, "input": {"nums": [1], "k": 1}, "expected": [1], "remark": ""},
+  {"id": 3, "input": {"nums": [1, 2, 1, 2, 1, 2, 3, 1, 3, 2], "k": 2}, "expected": [1, 2], "remark": ""},
+  {"id": 4, "input": {"nums": [-1, -1, 2, 2, 2, 3], "k": 1}, "expected": [2], "remark": "Custom: negative values and one maximum."},
+  {"id": 5, "input": {"nums": [4, 4, 4, 4], "k": 1}, "expected": [4], "remark": "Custom: one distinct value; the final heap becomes empty."},
+  {"id": 6, "input": {"nums": [3, 1, 2], "k": 3}, "expected": [1, 2, 3], "remark": "Custom: select all values with tied frequencies."},
+  {"id": 7, "input": {"nums": [0, 0, 0, -10000, -10000, 10000], "k": 2}, "expected": [0, -10000], "remark": "Custom: zero and value bounds."},
+  {"id": 8, "input": {"nums": [7, 7, 8, 8, 9], "k": 2}, "expected": [7, 8], "remark": "Custom: a tie inside the uniquely selected set."},
+  {"id": 9, "input": {"nums": [5, 5, 5, 4, 4, 3], "k": 3}, "expected": [5, 4, 3], "remark": "Custom: extract every heap entry."}
+]
