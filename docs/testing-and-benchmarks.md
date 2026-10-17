@@ -44,7 +44,7 @@ If several functions match, choose one explicitly:
 go run ./cmd/leetcode test --function twoSum problems/algorithms/0001-two-sum/solutions/go/hashmap
 ```
 
-The current runner supports top-level functions with fixed named parameters and exactly one returned value. Integers, strings, booleans, slices, arrays, maps, and other types accepted by Go's JSON decoder work directly. Ordinary singly linked lists also support array fixtures as described below. Generic functions, variadic functions, methods, multiple-return functions, trees, and other special node encodings require additional adapters or conversion support.
+The current runner supports top-level functions with fixed named parameters and exactly one returned value. Integers, strings, booleans, slices, arrays, maps, and other types accepted by Go's JSON decoder work directly. Ordinary singly linked lists and binary trees also support array fixtures as described below. Generic functions, variadic functions, methods, multiple-return functions, and other special node encodings require additional adapters or conversion support.
 
 Generated `zz_generated_test.go` files are ignored by Git. They contain a function reference, parameter names, fixture path, and comparison mode; they do not contain solution code or custom fixture parsing. Do not maintain them manually. The generator only overwrites files bearing its generated header and never edits `solution.go` or handwritten tests.
 
@@ -77,6 +77,18 @@ For a node pointer with exactly two fields, `Val int` and `Next` of the same poi
 ```
 
 An empty array or `null` represents a nil head. The returned list is traversed and compared by values in order; a nil result matches an empty expected array. A cycle in the returned list fails the case rather than looping indefinitely. Invalid values such as null list elements are rejected. Nodes with extra fields, cyclic input lists, and nested collections of node pointers need separate conversion support.
+
+### Binary trees
+
+Node pointers with exactly three fields, `Val int`, `Left`, and `Right` (both of the same pointer type), support LeetCode-style level-order arrays. Missing children use `null`; omitted trailing slots are treated as absent children. An empty array or `null` represents a nil root.
+
+```json
+{"id": 1, "input": {"root": [3, 9, 20, null, null, 15, 7]}, "expected": [[3], [9, 20], [15, 7]], "remark": ""}
+```
+
+Child slots belong to the next non-null parent, not to heap-array indices: `[1, null, 2, 3]` gives node 2 a left child of 3. Non-null values without a parent and non-integer node values fail decoding. Each call receives a fresh tree.
+
+For functions returning a tree pointer, expected arrays are decoded the same way and comparison preserves values and structure. Returned cycles and shared children fail validation. Extra node fields and nested collections of tree pointers require additional support. For problem 102, the return type is `[][]int`, so ordinary exact array comparison checks both level and node order.
 
 ### Other values
 

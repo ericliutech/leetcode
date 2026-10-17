@@ -229,3 +229,113 @@ func TestLinkedListRecognitionDoesNotIgnoreAdditionalFields(t *testing.T) {
 		t.Fatal("only pointers to ordinary singly linked nodes should match")
 	}
 }
+
+type testTreeNode struct {
+	Val   int
+	Left  *testTreeNode
+	Right *testTreeNode
+}
+
+func TestBinaryTreeLevelOrderDecoding(t *testing.T) {
+	kind := reflect.TypeOf((*testTreeNode)(nil))
+	for _, check := range []struct{ input, canonical string }{
+		{`[]`, `[]`},
+		{`null`, `[]`},
+		{`[null]`, `[]`},
+		{`[1]`, `[1]`},
+		{`[1,null,null,null]`, `[1]`},
+		{`[3,9,20,null,null,15,7]`, `[3,9,20,null,null,15,7]`},
+		{`[1,null,2,3]`, `[1,null,2,3]`},
+		{`[0,-1000,1000]`, `[0,-1000,1000]`},
+	} {
+		t.Run(check.input, func(t *testing.T) {
+			root, err := decode(json.RawMessage(check.input), kind)
+			if err != nil {
+				t.Fatal(err)
+			}
+			values, err := treeValues(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			canonical, err := json.Marshal(values)
+			if err != nil || string(canonical) != check.canonical {
+				t.Fatalf("got %s, want %s (%v)", canonical, check.canonical, err)
+			}
+		})
+	}
+	root, err := decode(json.RawMessage(`[1,null,2,3]`), kind)
+	if err != nil {
+		t.Fatal(err)
+	}
+	node := root.Interface().(*testTreeNode)
+	if node.Left != nil || node.Right.Val != 2 || node.Right.Left.Val != 3 || node.Right.Right != nil {
+		t.Fatal("sparse arrays must assign children to non-null parents, not heap indices")
+	}
+}
+
+func TestBinaryTreeRejectsMalformedArrays(t *testing.T) {
+	kind := reflect.TypeOf((*testTreeNode)(nil))
+	for _, raw := range []string{`[null,1]`, `[1,null,null,2]`, `[1,"2"]`, `[1,1.5]`, `[1,[2]]`, `[true]`} {
+		if _, err := decode(json.RawMessage(raw), kind); err == nil {
+			t.Fatalf("invalid tree accepted: %s", raw)
+		}
+	}
+}
+
+func TestBinaryTreeDecodingCreatesIndependentNodes(t *testing.T) {
+	kind := reflect.TypeOf((*testTreeNode)(nil))
+	first, err := decode(json.RawMessage(`[1,2,2]`), kind)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := decode(json.RawMessage(`[1,2,2]`), kind)
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := first.Interface().(*testTreeNode)
+	root.Left.Val = 99
+	if root.Right.Val != 2 || second.Interface().(*testTreeNode).Left.Val != 2 {
+		t.Fatal("tree nodes were shared across branches or invocations")
+	}
+}
+
+func TestBinaryTreeComparisonPreservesStructure(t *testing.T) {
+	kind := reflect.TypeOf((*testTreeNode)(nil))
+	for _, check := range []struct {
+		got, want string
+		equal     bool
+	}{
+		{`[1,2,3]`, `[1,2,3,null,null,null,null]`, true},
+		{`[1,2]`, `[1,null,2]`, false},
+		{`[1,2,3]`, `[1,3,2]`, false},
+		{`[]`, `null`, true},
+	} {
+		got, err := decode(json.RawMessage(check.got), kind)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want, err := decode(json.RawMessage(check.want), kind)
+		if err != nil {
+			t.Fatal(err)
+		}
+		equal, err := matches(got, want, "exact")
+		if err != nil || equal != check.equal {
+			t.Fatalf("%s vs %s: equal=%v, want %v (%v)", check.got, check.want, equal, check.equal, err)
+		}
+	}
+}
+
+func TestBinaryTreeRejectsCyclesAndSharedNodes(t *testing.T) {
+	for _, cycle := range []bool{true, false} {
+		root := &testTreeNode{Val: 1}
+		if cycle {
+			root.Left = root
+		} else {
+			child := &testTreeNode{Val: 2}
+			root.Left, root.Right = child, child
+		}
+		if _, err := matches(reflect.ValueOf(root), reflect.ValueOf((*testTreeNode)(nil)), "exact"); err == nil {
+			t.Fatal("a cycle or shared child must not be accepted as a tree")
+		}
+	}
+}

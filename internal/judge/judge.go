@@ -54,6 +54,9 @@ func decode(data json.RawMessage, kind reflect.Type) (reflect.Value, error) {
 	if isListNode(kind) && (bytes.HasPrefix(trimmed, []byte("[")) || bytes.Equal(trimmed, []byte("null"))) {
 		return decodeList(data, kind)
 	}
+	if isTreeNode(kind) && (bytes.HasPrefix(trimmed, []byte("[")) || bytes.Equal(trimmed, []byte("null"))) {
+		return decodeTree(data, kind)
+	}
 	if bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
 		switch kind.Kind() {
 		case reflect.Pointer, reflect.Slice, reflect.Map, reflect.Interface:
@@ -125,7 +128,100 @@ func display(value reflect.Value) any {
 		values, _ := listValues(value) // Comparison has already checked for cycles.
 		return values
 	}
+	if isTreeNode(value.Type()) {
+		values, _ := treeValues(value) // Comparison has already checked the shape.
+		return values
+	}
 	return value.Interface()
+}
+
+func isTreeNode(kind reflect.Type) bool {
+	if kind.Kind() != reflect.Pointer || kind.Elem().Kind() != reflect.Struct || kind.Elem().NumField() != 3 {
+		return false
+	}
+	value, hasValue := kind.Elem().FieldByName("Val")
+	left, hasLeft := kind.Elem().FieldByName("Left")
+	right, hasRight := kind.Elem().FieldByName("Right")
+	return hasValue && hasLeft && hasRight && value.Type.Kind() == reflect.Int &&
+		len(value.Index) == 1 && len(left.Index) == 1 && len(right.Index) == 1 &&
+		value.PkgPath == "" && left.PkgPath == "" && right.PkgPath == "" && left.Type == kind && right.Type == kind
+}
+
+func decodeTree(data json.RawMessage, kind reflect.Type) (reflect.Value, error) {
+	var elements []json.RawMessage
+	if err := json.Unmarshal(data, &elements); err != nil {
+		return reflect.Value{}, fmt.Errorf("binary tree requires a level-order array: %w", err)
+	}
+	nodeAt := func(index int) (reflect.Value, error) {
+		if bytes.Equal(bytes.TrimSpace(elements[index]), []byte("null")) {
+			return reflect.Zero(kind), nil
+		}
+		node := reflect.New(kind.Elem()).Convert(kind)
+		value, err := decode(elements[index], node.Elem().FieldByName("Val").Type())
+		if err != nil {
+			return reflect.Value{}, fmt.Errorf("tree element %d: %w", index, err)
+		}
+		node.Elem().FieldByName("Val").Set(value)
+		return node, nil
+	}
+	if len(elements) == 0 {
+		return reflect.Zero(kind), nil
+	}
+	root, err := nodeAt(0)
+	if err != nil {
+		return reflect.Value{}, err
+	}
+	var parents []reflect.Value
+	if !root.IsNil() {
+		parents = append(parents, root)
+	}
+	next := 1
+	for index := 0; index < len(parents) && next < len(elements); index++ {
+		for _, field := range []string{"Left", "Right"} {
+			if next == len(elements) {
+				break
+			}
+			child, err := nodeAt(next)
+			if err != nil {
+				return reflect.Value{}, err
+			}
+			next++
+			parents[index].Elem().FieldByName(field).Set(child)
+			if !child.IsNil() {
+				parents = append(parents, child)
+			}
+		}
+	}
+	for ; next < len(elements); next++ {
+		if !bytes.Equal(bytes.TrimSpace(elements[next]), []byte("null")) {
+			return reflect.Value{}, fmt.Errorf("tree element %d has no parent", next)
+		}
+	}
+	return root, nil
+}
+
+func treeValues(root reflect.Value) ([]any, error) {
+	values := make([]any, 0)
+	queue := []reflect.Value{root}
+	visited := make(map[any]bool)
+	for index := 0; index < len(queue); index++ {
+		node := queue[index]
+		if node.IsNil() {
+			values = append(values, nil)
+			continue
+		}
+		identity := node.Interface()
+		if visited[identity] {
+			return nil, fmt.Errorf("returned binary tree contains a cycle or shared node")
+		}
+		visited[identity] = true
+		values = append(values, int(node.Elem().FieldByName("Val").Int()))
+		queue = append(queue, node.Elem().FieldByName("Left"), node.Elem().FieldByName("Right"))
+	}
+	for len(values) > 0 && values[len(values)-1] == nil {
+		values = values[:len(values)-1]
+	}
+	return values, nil
 }
 
 func arguments(tc Case, signature reflect.Type, names []string) ([]reflect.Value, error) {
@@ -148,6 +244,20 @@ func arguments(tc Case, signature reflect.Type, names []string) ([]reflect.Value
 }
 
 func matches(got, expected reflect.Value, comparison string) (bool, error) {
+	if isTreeNode(got.Type()) {
+		if comparison != "exact" {
+			return false, fmt.Errorf("binary trees require exact structural comparison")
+		}
+		values, err := treeValues(got)
+		if err != nil {
+			return false, err
+		}
+		wanted, err := treeValues(expected)
+		if err != nil {
+			return false, err
+		}
+		return reflect.DeepEqual(values, wanted), nil
+	}
 	if isListNode(got.Type()) {
 		if comparison != "exact" {
 			return false, fmt.Errorf("linked lists require exact ordered comparison")
