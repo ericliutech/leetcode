@@ -1,0 +1,12 @@
+[
+  {"id": 1, "input": {"intervals": [[1, 3], [2, 6], [8, 10], [15, 18]]}, "expected": [[1, 6], [8, 10], [15, 18]], "remark": ""},
+  {"id": 2, "input": {"intervals": [[1, 4], [4, 5]]}, "expected": [[1, 5]], "remark": ""},
+  {"id": 3, "input": {"intervals": [[4, 7], [1, 4]]}, "expected": [[1, 7]], "remark": ""},
+  {"id": 4, "input": {"intervals": [[2, 2]]}, "expected": [[2, 2]], "remark": "Custom: one zero-length interval."},
+  {"id": 5, "input": {"intervals": [[1, 10], [2, 3], [4, 8]]}, "expected": [[1, 10]], "remark": "Custom: nested intervals must not shrink the end."},
+  {"id": 6, "input": {"intervals": [[5, 7], [1, 2], [3, 4]]}, "expected": [[1, 2], [3, 4], [5, 7]], "remark": "Custom: unsorted disjoint intervals."},
+  {"id": 7, "input": {"intervals": [[1, 3], [1, 3], [1, 2]]}, "expected": [[1, 3]], "remark": "Custom: equal starts and duplicate intervals."},
+  {"id": 8, "input": {"intervals": [[6, 8], [1, 3], [2, 6]]}, "expected": [[1, 8]], "remark": "Custom: a bridge joins several intervals."},
+  {"id": 9, "input": {"intervals": [[0, 0], [0, 1], [10000, 10000]]}, "expected": [[0, 1], [10000, 10000]], "remark": "Custom: value bounds and touching endpoints."},
+  {"id": 10, "input": {"intervals": [[1, 2], [3, 4], [4, 5], [8, 9]]}, "expected": [[1, 2], [3, 5], [8, 9]], "remark": "Custom: compact after a gap, then merge again."}
+]
