@@ -1,4 +1,4 @@
-package recursion
+package solution
 
 type ListNode struct {
 	Val  int

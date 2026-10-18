@@ -39,6 +39,8 @@ The trigger is the clue suggesting a technique; the key idea describes how it wo
 
 Use methodology names such as `hashmap`, `sliding-window`, and `stack`. `initial` is acceptable for blank scaffolding. Separate Go approaches use separate packages within the root module. Tools must not edit, format, move, or rename solution source files without the owner's explicit permission.
 
+Use `package solution` for every Go approach. Go identifies packages by directory/import path, not just the package name: `go/iterative` and `go/recursion` are separate packages and can both define `reverseList` and `ListNode`. Put each additional implementation in its own approach directory, rather than adding duplicate function names in the same directory. Run the test command after changing a package declaration so generated adapters receive the matching package name.
+
 ## Adding a problem
 
 1. Create the problem directory and its `problem.md` using the structure above.
