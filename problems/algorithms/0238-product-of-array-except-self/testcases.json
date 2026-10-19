@@ -1,0 +1,11 @@
+[
+  {"id": 1, "input": {"nums": [1, 2, 3, 4]}, "expected": [24, 12, 8, 6], "remark": ""},
+  {"id": 2, "input": {"nums": [-1, 1, 0, -3, 3]}, "expected": [0, 0, 9, 0, 0], "remark": ""},
+  {"id": 3, "input": {"nums": [2, 3]}, "expected": [3, 2], "remark": "Custom: minimum length."},
+  {"id": 4, "input": {"nums": [0, 2, 3]}, "expected": [6, 0, 0], "remark": "Custom: zero at the first index."},
+  {"id": 5, "input": {"nums": [2, 3, 0]}, "expected": [0, 0, 6], "remark": "Custom: zero at the last index."},
+  {"id": 6, "input": {"nums": [0, 2, 0]}, "expected": [0, 0, 0], "remark": "Custom: multiple zeros."},
+  {"id": 7, "input": {"nums": [-1, -2, -3, -4]}, "expected": [-24, -12, -8, -6], "remark": "Custom: negative factors."},
+  {"id": 8, "input": {"nums": [1, 1, 1, 1]}, "expected": [1, 1, 1, 1], "remark": "Custom: repeated values."},
+  {"id": 9, "input": {"nums": [-2, 3, -4, 5]}, "expected": [-60, 40, -30, 24], "remark": "Custom: mixed signs without zeros."}
+]

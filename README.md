@@ -8,8 +8,8 @@ My LeetCode problems, solutions, and notes for future review.
 
 | Measure | Count |
 | --- | ---: |
-| Documented problems | 10 |
-| Solution entries | 14 |
+| Documented problems | 11 |
+| Solution entries | 15 |
 
 Counts reflect documentation, not correctness or LeetCode acceptance.
 
@@ -26,6 +26,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | 102 | [Binary Tree Level Order Traversal](problems/algorithms/0102-binary-tree-level-order-traversal/problem.md) | Medium | Tree, Breadth-first search, Binary tree | go |
 | 104 | [Maximum Depth of Binary Tree](problems/algorithms/0104-maximum-depth-of-binary-tree/problem.md) | Easy | Tree, Depth-first search, Binary tree | go |
 | 206 | [Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | Easy | Linked list, Recursion | go |
+| 238 | [Product of Array Except Self](problems/algorithms/0238-product-of-array-except-self/problem.md) | Medium | Array, Prefix sum | go |
 | 347 | [Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | Medium | Array, Hash table, Heap, Bucket sort | go |
 
 ## Solution notes
@@ -43,6 +44,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | [104. Maximum Depth of Binary Tree](problems/algorithms/0104-maximum-depth-of-binary-tree/problem.md) | [go/recursive-dfs](problems/algorithms/0104-maximum-depth-of-binary-tree/solutions/go/recursive-dfs/) | Tree depth combines the depths of its subtrees | Return 0 for nil; otherwise return 1 plus the larger child depth. | O(n) | O(h) call stack; O(n) worst case |  |
 | [206. Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | [go/iterative](problems/algorithms/0206-reverse-linked-list/solutions/go/iterative/) | Reverse links in place | Save the next node, reverse the current link, then advance. | O(n) | O(1) |  |
 | [206. Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | [go/recursive](problems/algorithms/0206-reverse-linked-list/solutions/go/recursive/) | Reverse the remaining list first | Reverse the suffix, point the next node back to the current node, then clear the current link. This is equivalent to using a stack iteratively. | O(n) | O(n), call stack |  |
+| [238. Product of Array Except Self](problems/algorithms/0238-product-of-array-except-self/problem.md) | [go/prefix-suffix](problems/algorithms/0238-product-of-array-except-self/solutions/go/prefix-suffix/) | Exclude one index from a product; division is disallowed | Store exclusive prefix products in the result, then multiply by a running suffix product while scanning backward. | O(n) | O(1) auxiliary; output excluded |  |
 | [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/max-heap](problems/algorithms/0347-top-k-frequent-elements/solutions/go/max-heap/) | Select the k most frequent distinct values | Count frequencies, heapify value/count pairs, then extract the maximum k times. | O(n + k log m) expected | O(m) |  |
 | [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/min-heap](problems/algorithms/0347-top-k-frequent-elements/solutions/go/min-heap/) | Top k; retain only k candidates | Count frequencies, keep a size-k min-heap, and replace its root when a higher count appears. | O(n + m log k) expected | O(m) total; O(k) heap |  |
 | [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/bucket-sort](problems/algorithms/0347-top-k-frequent-elements/solutions/go/bucket-sort/) | Frequencies are bounded by the input length | Count frequencies and track the maximum; group values by count, then scan buckets downward until k values are collected. | O(n) expected | O(m + F), worst-case O(n) |  |
