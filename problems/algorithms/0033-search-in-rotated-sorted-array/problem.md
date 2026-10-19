@@ -36,6 +36,8 @@ Return an index in the supplied array, not in its unrotated form. Compare the in
 
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
-| [go/binary-search](solutions/go/binary-search/) | Rotated sorted array; O(log n) required | Compare target with the midpoint; use endpoint bounds to detect when rotation reverses the usual search direction. | O(log n) | O(1) | Tried recursion; iteration avoids extra stack space. |
+| [go/binary-search](solutions/go/binary-search/) | Rotated sorted array; O(log n) required | Identify the sorted half, then use its bounds to decide which half can contain the target. | O(log n) | O(1) | Tried recursion; iteration avoids extra stack space. |
 
 `n` is the array length. Each iteration excludes the midpoint and discards one half. The solution does not modify `nums`.
+
+The midpoint uses `left + (right-left)/2` to avoid overflowing `left + right` in general. The original sum was safe under this problem's limit of 5,000 elements.
