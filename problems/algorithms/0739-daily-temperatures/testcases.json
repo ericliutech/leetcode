@@ -1,0 +1,11 @@
+[
+  {"id": 1, "input": {"temperatures": [73, 74, 75, 71, 69, 72, 76, 73]}, "expected": [1, 1, 4, 2, 1, 1, 0, 0], "remark": ""},
+  {"id": 2, "input": {"temperatures": [30, 40, 50, 60]}, "expected": [1, 1, 1, 0], "remark": ""},
+  {"id": 3, "input": {"temperatures": [30, 60, 90]}, "expected": [1, 1, 0], "remark": ""},
+  {"id": 4, "input": {"temperatures": [30]}, "expected": [0], "remark": "Custom: one day."},
+  {"id": 5, "input": {"temperatures": [100, 90, 80, 30]}, "expected": [0, 0, 0, 0], "remark": "Custom: decreasing temperatures."},
+  {"id": 6, "input": {"temperatures": [70, 70, 70]}, "expected": [0, 0, 0], "remark": "Custom: equal temperatures are not warmer."},
+  {"id": 7, "input": {"temperatures": [70, 70, 71]}, "expected": [2, 1, 0], "remark": "Custom: equal readings followed by a warmer day."},
+  {"id": 8, "input": {"temperatures": [80, 70, 60, 90]}, "expected": [3, 2, 1, 0], "remark": "Custom: one day resolves the whole stack."},
+  {"id": 9, "input": {"temperatures": [70, 71, 70, 71]}, "expected": [1, 0, 1, 0], "remark": "Custom: repeated peaks."}
+]
