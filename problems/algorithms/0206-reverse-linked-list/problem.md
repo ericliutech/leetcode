@@ -39,4 +39,4 @@ Implement both a loop-based approach and a recursive approach.
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
 | [go/iterative](solutions/go/iterative/) | Reverse links in place | Save the next node, reverse the current link, then advance. | O(n) | O(1) | |
-| [go/recursion](solutions/go/recursion/) | Reverse the remaining list first | Reverse the suffix, point the next node back to the current node, then clear the current link. This is equivalent to using a stack iteratively. | O(n) | O(n), call stack | |
+| [go/recursive](solutions/go/recursive/) | Reverse the remaining list first | Reverse the suffix, point the next node back to the current node, then clear the current link. This is equivalent to using a stack iteratively. | O(n) | O(n), call stack | |
