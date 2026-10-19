@@ -36,7 +36,7 @@ Compare the collection of merged intervals without regard to outer order. Within
 
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
-| [go/sort-and-merge](solutions/go/sort-and-merge/) | Overlapping ranges; sorted starts make merging local | Sort by start, merge into the last kept interval, and compact disjoint intervals into the same slice prefix. | O(n log n) | O(log n) sorting stack | Tried brute force; repeated slice splicing then made the merge pass O(n²). |
+| [go/sort-and-merge](solutions/go/sort-and-merge/) | Overlapping ranges; sorted starts make merging local | Sort by start, merge into the last kept interval, and compact disjoint intervals into the same slice prefix. | O(n log n) | O(log n) sorting stack | Tried brute force O(n³); repeated slice splicing then made the merge pass O(n²). |
 
 `n` is the input interval count. Sorting takes O(n log n); the merge scan takes O(n) and O(1) auxiliary space. The current Go toolchain uses pattern-defeating quicksort with a heapsort fallback and O(log n) stack space for `slices.SortFunc`.
 
