@@ -1,0 +1,13 @@
+[
+  {"id": 1, "input": {"grid": [[49, 49, 49, 49, 48], [49, 49, 48, 49, 48], [49, 49, 48, 48, 48], [48, 48, 48, 48, 48]]}, "expected": 1, "remark": ""},
+  {"id": 2, "input": {"grid": [[49, 49, 48, 48, 48], [49, 49, 48, 48, 48], [48, 48, 49, 48, 48], [48, 48, 48, 49, 49]]}, "expected": 3, "remark": ""},
+  {"id": 3, "input": {"grid": [[48]]}, "expected": 0, "remark": "Custom: single water cell."},
+  {"id": 4, "input": {"grid": [[49]]}, "expected": 1, "remark": "Custom: single land cell."},
+  {"id": 5, "input": {"grid": [[48, 48, 48], [48, 48, 48]]}, "expected": 0, "remark": "Custom: all water."},
+  {"id": 6, "input": {"grid": [[49, 49, 49], [49, 49, 49]]}, "expected": 1, "remark": "Custom: all land; cycles must not cause duplicate visits."},
+  {"id": 7, "input": {"grid": [[49, 48, 49, 48, 49], [48, 49, 48, 49, 48], [49, 48, 49, 48, 49]]}, "expected": 8, "remark": "Custom: diagonal cells remain separate islands."},
+  {"id": 8, "input": {"grid": [[49, 49, 48, 49, 49, 48, 49]]}, "expected": 3, "remark": "Custom: single row."},
+  {"id": 9, "input": {"grid": [[49], [49], [48], [49], [48], [49]]}, "expected": 3, "remark": "Custom: single column."},
+  {"id": 10, "input": {"grid": [[49, 49, 49], [49, 48, 49], [49, 49, 49]]}, "expected": 1, "remark": "Custom: an island surrounding a water cell."},
+  {"id": 11, "input": {"grid": [[49, 48, 48, 48, 49], [49, 48, 48, 48, 49], [49, 49, 49, 49, 49]]}, "expected": 1, "remark": "Custom: two apparent components join through a later row."}
+]
