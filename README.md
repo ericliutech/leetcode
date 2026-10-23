@@ -9,7 +9,7 @@ My LeetCode problems, solutions, and notes for future review.
 | Measure | Count |
 | --- | ---: |
 | Documented problems | 13 |
-| Solution entries | 17 |
+| Solution entries | 18 |
 
 Counts reflect documentation, not correctness or LeetCode acceptance.
 
@@ -44,7 +44,8 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | [102. Binary Tree Level Order Traversal](problems/algorithms/0102-binary-tree-level-order-traversal/problem.md) | [go/bfs](problems/algorithms/0102-binary-tree-level-order-traversal/solutions/go/bfs/) | Visit a tree level by level | Process the current queue length, enqueue left then right children, and clear and drop the processed prefix. | O(n) | O(w) auxiliary queue |  |
 | [104. Maximum Depth of Binary Tree](problems/algorithms/0104-maximum-depth-of-binary-tree/problem.md) | [go/iterative-dfs](problems/algorithms/0104-maximum-depth-of-binary-tree/solutions/go/iterative-dfs/) | Track depth along root-to-leaf paths | Store node/depth pairs on a stack, pop each node, update the maximum, and push its children at the next depth. | O(n) | O(h) upper bound; O(n) worst case |  |
 | [104. Maximum Depth of Binary Tree](problems/algorithms/0104-maximum-depth-of-binary-tree/problem.md) | [go/recursive-dfs](problems/algorithms/0104-maximum-depth-of-binary-tree/solutions/go/recursive-dfs/) | Tree depth combines the depths of its subtrees | Return 0 for nil; otherwise return 1 plus the larger child depth. | O(n) | O(h) call stack; O(n) worst case |  |
-| [200. Number of Islands](problems/algorithms/0200-number-of-islands/problem.md) | [go/bfs](problems/algorithms/0200-number-of-islands/solutions/go/bfs/) | Count connected components in a grid | Scan for unvisited land; count it and flood-fill its island with a queue, marking cells when enqueued. | O(m × n) | O(m × n) worst case |  |
+| [200. Number of Islands](problems/algorithms/0200-number-of-islands/problem.md) | [go/bfs-in-place](problems/algorithms/0200-number-of-islands/solutions/go/bfs-in-place/) | Count connected components; input may be modified | Count each unvisited island and flood-fill it, marking land directly in the grid when enqueued. | O(m × n) | O(m × n) |  |
+| [200. Number of Islands](problems/algorithms/0200-number-of-islands/problem.md) | [go/bfs-bitmap](problems/algorithms/0200-number-of-islands/solutions/go/bfs-bitmap/) | Count connected components; preserve the input | Track visited cells separately and flood-fill each island with a queue. Mark neighbors when enqueued; only expand from land. | O(m × n) | O(m × n) |  |
 | [206. Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | [go/iterative](problems/algorithms/0206-reverse-linked-list/solutions/go/iterative/) | Reverse links in place | Save the next node, reverse the current link, then advance. | O(n) | O(1) |  |
 | [206. Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | [go/recursive](problems/algorithms/0206-reverse-linked-list/solutions/go/recursive/) | Reverse the remaining list first | Reverse the suffix, point the next node back to the current node, then clear the current link. This is equivalent to using a stack iteratively. | O(n) | O(n), call stack |  |
 | [238. Product of Array Except Self](problems/algorithms/0238-product-of-array-except-self/problem.md) | [go/prefix-suffix](problems/algorithms/0238-product-of-array-except-self/solutions/go/prefix-suffix/) | Exclude one index from a product; division is disallowed | Store exclusive prefix products in the result, then multiply by a running suffix product while scanning backward. | O(n) | O(1) auxiliary; output excluded |  |

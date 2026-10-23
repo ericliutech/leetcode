@@ -28,14 +28,17 @@ These examples and additional edge cases are stored in [testcases.json](testcase
 
 ## Output rules
 
-Compare the returned island count exactly. The implementation mutates the input grid to mark visited land; each test invocation receives fresh input.
+Compare the returned island count exactly. The in-place implementation mutates the grid; the visited-bitmap implementation preserves it. Each test invocation receives fresh input.
 
 ## My solutions
 
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
-| [go/bfs](solutions/go/bfs/) | Count connected components in a grid | Scan for unvisited land; count it and flood-fill its island with a queue, marking cells when enqueued. | O(m × n) | O(m × n) worst case |  |
+| [go/bfs-in-place](solutions/go/bfs-in-place/) | Count connected components; input may be modified | Count each unvisited island and flood-fill it, marking land directly in the grid when enqueued. | O(m × n) | O(m × n) |  |
+| [go/bfs-bitmap](solutions/go/bfs-bitmap/) | Count connected components; preserve the input | Track visited cells separately and flood-fill each island with a queue. Mark neighbors when enqueued; only expand from land. | O(m × n) | O(m × n) |  |
 
-`m` and `n` are the row and column counts. Marking cells when enqueuing prevents duplicate visits; either BFS or DFS can use that rule. The grid doubles as the visited bitmap.
+`m` and `n` are the row and column counts. Marking cells when enqueuing prevents duplicate visits; either BFS or DFS can use that rule. Each cell is enqueued at most once, giving O(m × n) total time. The bitmap version also enqueues neighboring water cells, but only expands from land.
 
-In this implementation, `clear(queue)` runs after the previous traversal has drained the slice, so it is a no-op. Dropping the slice prefix avoids retaining references to visited objects because queue elements contain only integers; the slice can still retain its backing allocation. The supplied solution is preserved unchanged apart from its package declaration.
+Both versions preallocate a buffer with capacity `m*n`, so auxiliary space is O(m × n) for every input, including an all-water grid. The in-place version marks visited land in the grid; the bitmap version preserves the grid by allocating an additional O(m × n) boolean matrix.
+
+Each island starts with `queue := buffer`. Advancing `queue` with `queue[1:]` leaves the original buffer header unchanged, so the next island reuses its full capacity from the beginning. The capacity covers every possible enqueue in one traversal. No clearing is needed: entries contain only integers and appends overwrite old values.
