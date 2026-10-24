@@ -8,8 +8,8 @@ My LeetCode problems, solutions, and notes for future review.
 
 | Measure | Count |
 | --- | ---: |
-| Documented problems | 13 |
-| Solution entries | 18 |
+| Documented problems | 14 |
+| Solution entries | 19 |
 
 Counts reflect documentation, not correctness or LeetCode acceptance.
 
@@ -29,6 +29,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | 206 | [Reverse Linked List](problems/algorithms/0206-reverse-linked-list/problem.md) | Easy | Linked list, Recursion | go |
 | 238 | [Product of Array Except Self](problems/algorithms/0238-product-of-array-except-self/problem.md) | Medium | Array, Prefix sum | go |
 | 347 | [Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | Medium | Array, Hash table, Heap, Bucket sort | go |
+| 560 | [Subarray Sum Equals K](problems/algorithms/0560-subarray-sum-equals-k/problem.md) | Medium | Array, Hash table, Prefix sum | go |
 | 739 | [Daily Temperatures](problems/algorithms/0739-daily-temperatures/problem.md) | Medium | Array, Stack, Monotonic stack | go |
 
 ## Solution notes
@@ -52,6 +53,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/max-heap](problems/algorithms/0347-top-k-frequent-elements/solutions/go/max-heap/) | Select the k most frequent distinct values | Count frequencies, heapify value/count pairs, then extract the maximum k times. | O(n + k log m) expected | O(m) |  |
 | [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/min-heap](problems/algorithms/0347-top-k-frequent-elements/solutions/go/min-heap/) | Top k; retain only k candidates | Count frequencies, keep a size-k min-heap, and replace its root when a higher count appears. | O(n + m log k) expected | O(m) total; O(k) heap |  |
 | [347. Top K Frequent Elements](problems/algorithms/0347-top-k-frequent-elements/problem.md) | [go/bucket-sort](problems/algorithms/0347-top-k-frequent-elements/solutions/go/bucket-sort/) | Frequencies are bounded by the input length | Count frequencies and track the maximum; group values by count, then scan buckets downward until k values are collected. | O(n) expected | O(m + F), worst-case O(n) |  |
+| [560. Subarray Sum Equals K](problems/algorithms/0560-subarray-sum-equals-k/problem.md) | [go/prefix-sum-hashmap](problems/algorithms/0560-subarray-sum-equals-k/solutions/go/prefix-sum-hashmap/) | Count contiguous ranges with an exact sum; negatives prevent standard sliding-window reasoning | For each prefix sum S, count earlier prefixes equal to S - k using a frequency map. | O(n) expected | O(n) | Started with O(n²); understood this approach with ChatGPT help. |
 | [739. Daily Temperatures](problems/algorithms/0739-daily-temperatures/problem.md) | [go/monotonic-stack](problems/algorithms/0739-daily-temperatures/solutions/go/monotonic-stack/) | Find the next strictly greater value to the right | Keep unresolved indices in a stack with non-increasing temperatures. A warmer day pops indices and records their waiting times. | O(n) | O(n) |  |
 
 <!-- generated:progress:end -->

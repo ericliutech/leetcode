@@ -1,0 +1,11 @@
+[
+  {"id": 1, "input": {"nums": [1, 1, 1], "k": 2}, "expected": 2, "remark": ""},
+  {"id": 2, "input": {"nums": [1, 2, 3], "k": 3}, "expected": 2, "remark": ""},
+  {"id": 3, "input": {"nums": [3], "k": 3}, "expected": 1, "remark": "Custom: single matching element."},
+  {"id": 4, "input": {"nums": [1], "k": 0}, "expected": 0, "remark": "Custom: do not count an empty range."},
+  {"id": 5, "input": {"nums": [0, 0, 0], "k": 0}, "expected": 6, "remark": "Custom: repeated prefix sums require frequencies."},
+  {"id": 6, "input": {"nums": [1, -1, 1], "k": 1}, "expected": 3, "remark": "Custom: overlapping ranges and negative values."},
+  {"id": 7, "input": {"nums": [-1, -1, 1], "k": -1}, "expected": 3, "remark": "Custom: negative target."},
+  {"id": 8, "input": {"nums": [1, -1, 0], "k": 0}, "expected": 3, "remark": "Custom: zero target with cancellation."},
+  {"id": 9, "input": {"nums": [1, 2], "k": 10}, "expected": 0, "remark": "Custom: no matching range."}
+]
