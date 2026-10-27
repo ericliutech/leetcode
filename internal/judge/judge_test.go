@@ -93,6 +93,12 @@ func TestComparisonsPreserveMultiplicityAndNestedOrder(t *testing.T) {
 		{"duplicate counts", "unordered", []int{1, 2, 2}, []int{1, 1, 2}, false},
 		{"nested order", "unordered", [][]int{{2, 1}}, [][]int{{1, 2}}, false},
 		{"null vs empty", "unordered", []int(nil), []int{}, false},
+		{"combination order", "combinations", [][]int{{7}, {3, 2, 2}}, [][]int{{2, 2, 3}, {7}}, true},
+		{"combination duplicates", "combinations", [][]int{{2, 2, 3}, {3, 2, 2}}, [][]int{{2, 2, 3}, {7}}, false},
+		{"combination value counts", "combinations", [][]int{{2, 3, 3}}, [][]int{{2, 2, 3}}, false},
+		{"missing combination", "combinations", [][]int{{7}}, [][]int{{7}, {2, 2, 3}}, false},
+		{"empty combinations", "combinations", [][]int{}, [][]int{}, true},
+		{"nil combinations", "combinations", [][]int(nil), [][]int(nil), true},
 	}
 	for _, check := range checks {
 		t.Run(check.name, func(t *testing.T) {
@@ -338,4 +344,15 @@ func TestBinaryTreeRejectsCyclesAndSharedNodes(t *testing.T) {
 			t.Fatal("a cycle or shared child must not be accepted as a tree")
 		}
 	}
+}
+
+func TestCombinationsRejectsFlatResults(t *testing.T) {
+	if _, err := matches(reflect.ValueOf([]int{}), reflect.ValueOf([]int{}), "combinations"); err == nil {
+		t.Fatal("flat combinations accepted")
+	}
+}
+
+func TestRunCombinations(t *testing.T) {
+	path := fixture(t, `[{"id":1,"input":{"values":[2,3,7]},"expected":[[2,2,3],[7]]}]`)
+	Run(t, path, func(values []int) [][]int { return [][]int{{7}, {3, 2, 2}} }, []string{"values"}, "combinations")
 }

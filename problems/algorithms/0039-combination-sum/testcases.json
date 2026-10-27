@@ -1,0 +1,10 @@
+[
+  {"id": 1, "input": {"candidates": [2, 3, 6, 7], "target": 7}, "expected": [[2, 2, 3], [7]], "remark": ""},
+  {"id": 2, "input": {"candidates": [2, 3, 5], "target": 8}, "expected": [[2, 2, 2, 2], [2, 3, 3], [3, 5]], "remark": ""},
+  {"id": 3, "input": {"candidates": [2], "target": 1}, "expected": null, "remark": ""},
+  {"id": 4, "input": {"candidates": [2], "target": 8}, "expected": [[2, 2, 2, 2]], "remark": "Custom: repeated use of one candidate."},
+  {"id": 5, "input": {"candidates": [4], "target": 6}, "expected": null, "remark": "Custom: no exact combination."},
+  {"id": 6, "input": {"candidates": [7], "target": 7}, "expected": [[7]], "remark": "Custom: one exact candidate."},
+  {"id": 7, "input": {"candidates": [7, 3, 2], "target": 7}, "expected": [[7], [3, 2, 2]], "remark": "Custom: unsorted candidates; combination element order is ignored."},
+  {"id": 8, "input": {"candidates": [2, 3], "target": 6}, "expected": [[2, 2, 2], [3, 3]], "remark": "Custom: saved paths remain independent."}
+]

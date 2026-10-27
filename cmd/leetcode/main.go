@@ -144,7 +144,7 @@ func prepare(root, directory, selected string) (string, []byte, error) {
 	if len(settings) == 1 {
 		comparison = strings.TrimSpace(string(settings[0][1]))
 	}
-	if comparison != "exact" && comparison != "unordered" {
+	if comparison != "exact" && comparison != "unordered" && comparison != "combinations" {
 		return "", nil, fmt.Errorf("%s: unknown comparison %q", problem, comparison)
 	}
 	fixtures, err := filepath.Rel(directory, filepath.Join(problem, "testcases.json"))

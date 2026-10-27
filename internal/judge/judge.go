@@ -275,9 +275,15 @@ func matches(got, expected reflect.Value, comparison string) (bool, error) {
 	switch comparison {
 	case "exact":
 		return reflect.DeepEqual(got.Interface(), expected.Interface()), nil
-	case "unordered":
+	case "unordered", "combinations":
 		if got.Kind() != reflect.Array && got.Kind() != reflect.Slice {
 			return false, fmt.Errorf("unordered comparison requires an array or slice")
+		}
+		if comparison == "combinations" {
+			inner := got.Type().Elem().Kind()
+			if inner != reflect.Array && inner != reflect.Slice {
+				return false, fmt.Errorf("combinations comparison requires nested arrays or slices")
+			}
 		}
 		if got.Kind() == reflect.Slice && got.IsNil() != expected.IsNil() {
 			return false, nil
@@ -285,12 +291,23 @@ func matches(got, expected reflect.Value, comparison string) (bool, error) {
 		if got.Len() != expected.Len() {
 			return false, nil
 		}
-		// Compare only the outer collection; preserve multiplicity and inner order.
+		// Match each entry once, preserving multiplicity at both levels.
 		used := make([]bool, expected.Len())
 		for index := 0; index < got.Len(); index++ {
 			found := false
 			for other := 0; other < expected.Len(); other++ {
-				if !used[other] && reflect.DeepEqual(got.Index(index).Interface(), expected.Index(other).Interface()) {
+				if used[other] {
+					continue
+				}
+				equal := reflect.DeepEqual(got.Index(index).Interface(), expected.Index(other).Interface())
+				if comparison == "combinations" {
+					var err error
+					equal, err = matches(got.Index(index), expected.Index(other), "unordered")
+					if err != nil {
+						return false, err
+					}
+				}
+				if equal {
 					used[other], found = true, true
 					break
 				}
@@ -317,7 +334,7 @@ func Run(t *testing.T, path string, function any, names []string, comparison str
 	if signature.IsVariadic() || signature.NumIn() != len(names) || signature.NumOut() != 1 {
 		t.Fatal("supported functions have named fixed parameters and exactly one result")
 	}
-	if comparison != "exact" && comparison != "unordered" {
+	if comparison != "exact" && comparison != "unordered" && comparison != "combinations" {
 		t.Fatalf("unknown comparison %q", comparison)
 	}
 	cases, err := Load(path)

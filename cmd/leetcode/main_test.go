@@ -129,3 +129,13 @@ func TestGeneratedAdapterCompilesAndRunsANewSignature(t *testing.T) {
 		t.Fatal("incorrect expected output did not fail the command")
 	}
 }
+
+func TestCombinationsAdapter(t *testing.T) {
+	root, directory := temporaryRepository(t)
+	problem := filepath.Dir(filepath.Dir(filepath.Dir(directory)))
+	write(t, filepath.Join(problem, "problem.md"), "# 99. Example\nComparison: combinations\n")
+	_, adapter, err := prepare(root, directory, "")
+	if err != nil || !strings.Contains(string(adapter), `"combinations"`) {
+		t.Fatalf("combinations adapter: %s, %v", adapter, err)
+	}
+}
