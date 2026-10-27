@@ -1,0 +1,9 @@
+[
+  {"id": 1, "input": {"strs": ["eat", "tea", "tan", "ate", "nat", "bat"]}, "expected": [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]], "remark": ""},
+  {"id": 2, "input": {"strs": [""]}, "expected": [[""]], "remark": ""},
+  {"id": 3, "input": {"strs": ["a"]}, "expected": [["a"]], "remark": ""},
+  {"id": 4, "input": {"strs": ["", "", "a"]}, "expected": [["", ""], ["a"]], "remark": "Custom: repeated empty strings."},
+  {"id": 5, "input": {"strs": ["ab", "ba", "ab", "aab", "aba", "abb"]}, "expected": [["ab", "ba", "ab"], ["aab", "aba"], ["abb"]], "remark": "Custom: duplicate strings and different letter frequencies."},
+  {"id": 6, "input": {"strs": ["abc", "def", "ghi"]}, "expected": [["abc"], ["def"], ["ghi"]], "remark": "Custom: distinct signatures."},
+  {"id": 7, "input": {"strs": ["zzz", "zz", "z", ""]}, "expected": [["zzz"], ["zz"], ["z"], [""]], "remark": "Custom: final alphabet index and different lengths."}
+]

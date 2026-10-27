@@ -8,8 +8,8 @@ My LeetCode problems, solutions, and notes for future review.
 
 | Measure | Count |
 | --- | ---: |
-| Documented problems | 15 |
-| Solution entries | 20 |
+| Documented problems | 16 |
+| Solution entries | 21 |
 
 Counts reflect documentation, not correctness or LeetCode acceptance.
 
@@ -23,6 +23,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | 20 | [Valid Parentheses](problems/algorithms/0020-valid-parentheses/problem.md) | Easy | String, Stack | go |
 | 33 | [Search in Rotated Sorted Array](problems/algorithms/0033-search-in-rotated-sorted-array/problem.md) | Medium | Array, Binary search | go |
 | 39 | [Combination Sum](problems/algorithms/0039-combination-sum/problem.md) | Medium | Array, Backtracking | go |
+| 49 | [Group Anagrams](problems/algorithms/0049-group-anagrams/problem.md) | Medium | Array, Hash table, String | go |
 | 56 | [Merge Intervals](problems/algorithms/0056-merge-intervals/problem.md) | Medium | Array, Sorting | go |
 | 102 | [Binary Tree Level Order Traversal](problems/algorithms/0102-binary-tree-level-order-traversal/problem.md) | Medium | Tree, Breadth-first search, Binary tree | go |
 | 104 | [Maximum Depth of Binary Tree](problems/algorithms/0104-maximum-depth-of-binary-tree/problem.md) | Easy | Tree, Depth-first search, Binary tree | go |
@@ -43,6 +44,7 @@ Counts reflect documentation, not correctness or LeetCode acceptance.
 | [20. Valid Parentheses](problems/algorithms/0020-valid-parentheses/problem.md) | [go/stack](problems/algorithms/0020-valid-parentheses/solutions/go/stack/) | Nested pairs; last opened must close first | Push opening brackets. For each closing bracket, require a matching stack top, then pop. Accept only if the stack ends empty. | Θ(n) worst case | O(n) |  |
 | [33. Search in Rotated Sorted Array](problems/algorithms/0033-search-in-rotated-sorted-array/problem.md) | [go/binary-search](problems/algorithms/0033-search-in-rotated-sorted-array/solutions/go/binary-search/) | Rotated sorted array; O(log n) required | Identify the sorted half, then use its bounds to decide which half can contain the target. | O(log n) | O(1) | Tried recursion; iteration avoids extra stack space. |
 | [39. Combination Sum](problems/algorithms/0039-combination-sum/problem.md) | [go/backtracking](problems/algorithms/0039-combination-sum/solutions/go/backtracking/) | Enumerate combinations with reusable choices | Backtrack: choose, recurse from the same index for reuse, then undo; clone successful paths. Sorting enables early pruning. | Exponential | O(d) auxiliary; output excluded |  |
+| [49. Group Anagrams](problems/algorithms/0049-group-anagrams/problem.md) | [go/frequency-array](problems/algorithms/0049-group-anagrams/solutions/go/frequency-array/) | Group strings by letter counts, regardless of character order | Use a 26-letter frequency array as the hash-map key; equal counts identify anagrams. | O(C + N) expected | O(N) |  |
 | [56. Merge Intervals](problems/algorithms/0056-merge-intervals/problem.md) | [go/sort-and-merge](problems/algorithms/0056-merge-intervals/solutions/go/sort-and-merge/) | Overlapping ranges; sorted starts make merging local | Sort by start, merge into the last kept interval, and compact disjoint intervals into the same slice prefix. | O(n log n) | O(log n) sorting stack | Tried brute force O(n³); repeated slice splicing then made the merge pass O(n²). |
 | [102. Binary Tree Level Order Traversal](problems/algorithms/0102-binary-tree-level-order-traversal/problem.md) | [go/bfs](problems/algorithms/0102-binary-tree-level-order-traversal/solutions/go/bfs/) | Visit a tree level by level | Process the current queue length, enqueue left then right children, and clear and drop the processed prefix. | O(n) | O(w) auxiliary queue |  |
 | [104. Maximum Depth of Binary Tree](problems/algorithms/0104-maximum-depth-of-binary-tree/problem.md) | [go/iterative-dfs](problems/algorithms/0104-maximum-depth-of-binary-tree/solutions/go/iterative-dfs/) | Track depth along root-to-leaf paths | Store node/depth pairs on a stack, pop each node, update the maximum, and push its children at the next depth. | O(n) | O(h) upper bound; O(n) worst case |  |
