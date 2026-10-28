@@ -34,6 +34,6 @@ Compare the returned count exactly. Overlapping subarrays count; empty subarrays
 
 | Approach | Trigger | Key idea | Time | Space | Mistakes |
 | --- | --- | --- | --- | --- | --- |
-| [go/prefix-sum-hashmap](solutions/go/prefix-sum-hashmap/) | Count contiguous ranges with an exact sum; negatives prevent standard sliding-window reasoning | For each prefix sum S, count earlier prefixes equal to S - k using a frequency map. | O(n) expected | O(n) | Started with O(n²); understood this approach with ChatGPT help. |
+| [go/prefix-sum-hashmap](solutions/go/prefix-sum-hashmap/) | Count contiguous ranges with an exact sum; values may be negative | For each prefix sum S, count earlier prefixes equal to S - k using a frequency map. | O(n) expected | O(n) | Started with O(n²); understood this approach with ChatGPT help. Updating the current prefix frequency before counting matches counts an empty range when k = 0: nums=[1] incorrectly returns 1 instead of 0. |
 
 Seed `prefix[0] = 1` to count ranges starting at index 0. Look up before incrementing the current prefix frequency to exclude empty ranges when `k = 0`. `n` is the array length.
