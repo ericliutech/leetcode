@@ -28,7 +28,7 @@ These examples and additional edge cases are stored in [testcases.json](testcase
 
 ## Output rules
 
-Compare the returned island count exactly. The in-place implementation mutates the grid; the visited-bitmap implementation preserves it. Each test invocation receives fresh input.
+Compare the returned island count exactly. The in-place BFS and recursive DFS mutate the grid; the visited-bitmap BFS preserves it. Each test invocation receives fresh input.
 
 ## My solutions
 
@@ -36,9 +36,12 @@ Compare the returned island count exactly. The in-place implementation mutates t
 | --- | --- | --- | --- | --- | --- |
 | [go/bfs-in-place](solutions/go/bfs-in-place/) | Count connected components; input may be modified | Count each unvisited island and flood-fill it, marking land directly in the grid when enqueued. | O(m × n) | O(m × n) |  |
 | [go/bfs-bitmap](solutions/go/bfs-bitmap/) | Count connected components; preserve the input | Track visited cells separately and flood-fill each island with a queue. Mark neighbors when enqueued; only expand from land. | O(m × n) | O(m × n) |  |
+| [go/dfs-recursive](solutions/go/dfs-recursive/) | Count connected components using recursive flood-fill | Count each unvisited island; mark land before recursively exploring its four neighbors. | O(m × n) | O(m × n) worst-case call stack |  |
 
-`m` and `n` are the row and column counts. Marking cells when enqueuing prevents duplicate visits; either BFS or DFS can use that rule. Each cell is enqueued at most once, giving O(m × n) total time. The bitmap version also enqueues neighboring water cells, but only expands from land.
+`m` and `n` are the row and column counts. All versions expand each land cell once and check at most four neighbors, giving O(m × n) total time. BFS marks cells when enqueuing to prevent duplicates; the bitmap version also enqueues neighboring water cells, but only expands from land.
 
-Both versions preallocate a buffer with capacity `m*n`, so auxiliary space is O(m × n) for every input, including an all-water grid. The in-place version marks visited land in the grid; the bitmap version preserves the grid by allocating an additional O(m × n) boolean matrix.
+Both BFS versions preallocate a buffer with capacity `m*n`, so auxiliary space is O(m × n) for every input, including an all-water grid. The in-place version marks visited land in the grid; the bitmap version preserves the grid by allocating an additional O(m × n) boolean matrix.
 
 Each island starts with `queue := buffer`. Advancing `queue` with `queue[1:]` leaves the original buffer header unchanged, so the next island reuses its full capacity from the beginning. The capacity covers every possible enqueue in one traversal. No clearing is needed: entries contain only integers and appends overwrite old values.
+
+Recursive DFS uses the call stack instead of a queue. Marking land as `'x'` before exploring prevents repeat expansion. Visited tracking needs O(1) extra space, but a traversal can reach O(m × n) recursion depth, so total auxiliary space is not O(1).
